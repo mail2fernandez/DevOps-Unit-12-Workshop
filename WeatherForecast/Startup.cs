@@ -68,3 +68,19 @@ namespace webapi
         }
     }
 }
+
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
+    services.AddAuthorization(config =>
+    {
+        config.AddPolicy(
+            "ApplicationPolicy",
+            policy => policy.RequireClaim(ClaimConstants.Roles, "WeatherApplicationRole")
+        );
+    });
+    JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
+
+    ...
+}
